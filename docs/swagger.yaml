@@ -6,7 +6,7 @@ info:
   title: Amigurumi 3D
   version: "1.0"
 paths:
-  /example/helloworld:
+  /ping:
     get:
       consumes:
       - application/json
