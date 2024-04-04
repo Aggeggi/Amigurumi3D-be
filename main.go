@@ -3,7 +3,7 @@ package main
 import (
 	_ "github.com/Aggeggi/Amigurumi3D-be/docs"
 	"github.com/Aggeggi/Amigurumi3D-be/routes"
-
+    "github.com/Aggeggi/Amigurumi3D-be/database"
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
@@ -19,11 +19,14 @@ import (
 //	@BasePath	/api/v1
 
 func main() {
+	database.InitDb()
+
 	r := gin.Default()
 	v1 := r.Group("/api/v1")
 	{
 
 		v1.GET("/ping", routes.Ping)
+		v1.POST("/amigurumi", routes.PostAmigurumi)
 	}
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

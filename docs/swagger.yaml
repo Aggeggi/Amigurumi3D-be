@@ -1,4 +1,10 @@
 basePath: /api/v1
+definitions:
+  requests.PostAmigurumiRequest:
+    properties:
+      name:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -6,6 +12,28 @@ info:
   title: Amigurumi 3D
   version: "1.0"
 paths:
+  /amigurumi:
+    post:
+      consumes:
+      - application/json
+      description: Add a new amigurumi
+      parameters:
+      - description: amigurumi info
+        in: body
+        name: amigurumi
+        required: true
+        schema:
+          $ref: '#/definitions/requests.PostAmigurumiRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Insert an amigurumi in db
+      tags:
+      - amigurumi
   /ping:
     get:
       consumes:
