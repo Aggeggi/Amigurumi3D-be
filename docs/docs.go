@@ -16,6 +16,27 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/amigurumi": {
+            "get": {
+                "description": "Get list of amigurumis",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "amigurumi"
+                ],
+                "summary": "List of amigurumis",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.AmigurumiPatternWithIdResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Add a new amigurumi",
                 "consumes": [
@@ -35,7 +56,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/requests.PostAmigurumiRequest"
+                            "$ref": "#/definitions/requests.AmigurumiPattern"
                         }
                     }
                 ],
@@ -49,9 +70,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/ping": {
+        "/amigurumi/{id}": {
             "get": {
-                "description": "do ping",
+                "description": "Get a pattern for an amigurumi",
                 "consumes": [
                     "application/json"
                 ],
@@ -59,9 +80,95 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "example"
+                    "amigurumi"
                 ],
-                "summary": "ping example",
+                "summary": "Amigurumi pattern",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Amigurumi ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.AmigurumiPatternResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "description": "Login a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Login user",
+                "parameters": [
+                    {
+                        "description": "user info",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.UserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "description": "Logout a user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Logout user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/ping": {
+            "get": {
+                "description": "Do ping",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "healthcheck"
+                ],
+                "summary": "Ping healthcheck",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -74,9 +181,98 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "requests.PostAmigurumiRequest": {
+        "entities.AmigurumiLayer": {
             "type": "object",
             "properties": {
+                "pattern": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.StitchType"
+                    }
+                },
+                "times": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entities.AmigurumiLayerContainer": {
+            "type": "object",
+            "properties": {
+                "layers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.AmigurumiLayer"
+                    }
+                },
+                "times": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entities.StitchType": {
+            "type": "string",
+            "enum": [
+                "SC",
+                "INC",
+                "DEC"
+            ],
+            "x-enum-varnames": [
+                "SC",
+                "INC",
+                "DEC"
+            ]
+        },
+        "requests.AmigurumiPattern": {
+            "type": "object",
+            "properties": {
+                "layers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.AmigurumiLayerContainer"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "requests.UserRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.AmigurumiPatternResponse": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "layers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.AmigurumiLayerContainer"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.AmigurumiPatternWithIdResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 }

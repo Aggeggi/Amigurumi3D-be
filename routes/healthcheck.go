@@ -8,11 +8,11 @@ import (
 
 //	@BasePath	/api/v1
 
-// PingExample godoc
-//	@Summary	ping example
+// Ping godoc
+//	@Summary	Ping healthcheck
 //	@Schemes
-//	@Description	do ping
-//	@Tags			example
+//	@Description	Do ping
+//	@Tags			healthcheck
 //	@Accept			json
 //	@Produce		json
 //	@Success		200	{string}	Helloworld
