@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"time"
 
 	"github.com/Aggeggi/Amigurumi3D-be/database"
@@ -28,19 +29,21 @@ func main() {
 	database.InitDb()
 
 	r := gin.Default()
-
+	allowedOrigins := os.Getenv("ALLOWED_ORIGINS")
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowOrigins:     []string{allowedOrigins},
 		AllowMethods:     []string{"GET", "PUT", "POST", "DELETE", "HEAD", "OPTIONS", "PATCH"},
 		AllowHeaders:     []string{"Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With"},
 		AllowCredentials: true,
 		AllowOriginFunc: func(origin string) bool {
-			return origin == "http://localhost:3000"
+			return origin == allowedOrigins
 		},
 		MaxAge: 12 * time.Hour,
 	}))
-	store := cookie.NewStore([]byte("secret"))
-	r.Use(sessions.Sessions("mysession", store))
+	cookieSecret := os.Getenv("COOKIE_SECRET")
+	cookieName := os.Getenv("COOKIE_NAME")
+	store := cookie.NewStore([]byte(cookieSecret))
+	r.Use(sessions.Sessions(cookieName, store))
 
 	v1 := r.Group("/api/v1")
 	v1.Use(middlewares.AuthRequired())
@@ -54,6 +57,6 @@ func main() {
 	}
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.POST("/api/v1/login", routes.Login)
-
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	port := os.Getenv("PORT")
+	r.Run(port)
 }
