@@ -28,13 +28,15 @@ type AmigurumiPattern struct {
 	UserId           primitive.ObjectID        `bson:"userId" json:"userId"`
 	Name             string                    `json:"name" bson:"name"`
 	Layers           []AmigurumiLayerContainer `json:"layers" bson:"layers"`
+	Public           bool                      `json:"public" bson:"public"`
 }
 
-func NewAmigurumiPattern(name string, layers []AmigurumiLayerContainer, userId string) *AmigurumiPattern {
+func NewAmigurumiPattern(name string, layers []AmigurumiLayerContainer, userId string, public bool) *AmigurumiPattern {
 	objID, _ := primitive.ObjectIDFromHex(userId)
 	return &AmigurumiPattern{
 		Name:   name,
 		Layers: layers,
 		UserId: objID,
+		Public: public,
 	}
 }

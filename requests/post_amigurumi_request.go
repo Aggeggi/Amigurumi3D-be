@@ -7,4 +7,5 @@ import (
 type AmigurumiPattern struct {
 	Name   string                             `json:"name" bson:"name"`
 	Layers []entities.AmigurumiLayerContainer `json:"layers" bson:"layers"`
+	Public bool                               `json:"public" bson:"public"`
 }

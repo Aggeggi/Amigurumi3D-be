@@ -57,6 +57,7 @@ func main() {
 	}
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.POST("/api/v1/login", routes.Login)
+	r.POST("/api/v1/signin", routes.SignIn)
 	port := os.Getenv("PORT")
 	r.Run(port)
 }

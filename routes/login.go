@@ -65,7 +65,6 @@ func Login(context *gin.Context) {
 	context.JSON(http.StatusOK, result[0].Username)
 }
 
-
 // Logout godoc
 //
 //	@Summary	Logout user
@@ -86,4 +85,45 @@ func Logout(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Signed out",
 	})
+}
+
+// SignIn godoc
+//
+//	@Summary	SignIn user
+//	@Schemes
+//	@Description	SignIn a user
+//	@Tags			user
+//	@Produce		json
+//	@Success		200	{string}	Signed out
+//	@Router			/signin [post]
+func SignIn(context *gin.Context) {
+	body := requests.UserRequest{}
+	if err := context.BindJSON(&body); err != nil {
+		context.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	coll := mgm.Coll(&entities.User{})
+	result := []entities.User{}
+	err := coll.SimpleFind(&result, bson.M{"username": body.Username})
+
+	if err != nil {
+		context.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+	if len(result) > 0 {
+		context.AbortWithStatusJSON(http.StatusUnauthorized, "Username already in use")
+		return
+	}
+
+	// coll := mgm.Coll(&entities.User{})
+	user := entities.NewUser(body.Username, body.Password)
+	errCreate := mgm.Coll(user).Create(user)
+
+	if errCreate != nil {
+		context.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	context.JSON(http.StatusOK, user.Username)
 }

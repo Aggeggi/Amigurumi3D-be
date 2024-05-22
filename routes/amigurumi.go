@@ -36,7 +36,7 @@ func PostAmigurumi(context *gin.Context) {
 		context.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
-	amigurumi := entities.NewAmigurumiPattern(body.Name, body.Layers, userId)
+	amigurumi := entities.NewAmigurumiPattern(body.Name, body.Layers, userId, body.Public)
 	if err := mgm.Coll(amigurumi).Create(amigurumi); err != nil {
 		context.AbortWithError(http.StatusBadRequest, err)
 		return
